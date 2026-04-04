@@ -4,9 +4,11 @@ import { useMemo, useState } from "react";
 
 import type {
   InterviewSession,
+  PersistedInterviewDraft,
   PreflightReadiness,
   StartInterviewResult,
 } from "@/lib/interview/types";
+import { InterviewRoom } from "./interview-room";
 import { PreflightPanel } from "./preflight-panel";
 
 type EntryScreenProps = {
@@ -14,6 +16,33 @@ type EntryScreenProps = {
 };
 
 export function EntryScreen({ session }: EntryScreenProps) {
+  const [activeInterview, setActiveInterview] = useState<{
+    interviewId: string;
+    launchToken: string;
+  } | null>(null);
+  const [recoveredDraft, setRecoveredDraft] =
+    useState<PersistedInterviewDraft | null>(() => {
+      if (typeof window === "undefined") {
+        return null;
+      }
+
+      const stored = window.localStorage.getItem(
+        `ai-interviewer:draft:${session.token}`,
+      );
+      if (!stored) {
+        return null;
+      }
+
+      try {
+        const parsed = JSON.parse(stored) as PersistedInterviewDraft;
+        return parsed.status === "draft" && parsed.entries.length > 0
+          ? parsed
+          : null;
+      } catch {
+        window.localStorage.removeItem(`ai-interviewer:draft:${session.token}`);
+        return null;
+      }
+    });
   const [readiness, setReadiness] = useState<PreflightReadiness>({
     cameraReady: false,
     microphoneReady: false,
@@ -55,14 +84,43 @@ export function EntryScreen({ session }: EntryScreenProps) {
 
       setStartState("confirmed");
       setLaunchMessage(
-        "Interview launch confirmed. Device readiness is complete and the live handoff is prepared for the next phase.",
+        "Interview launch confirmed. Connecting the live interviewer now.",
       );
+      setActiveInterview({
+        interviewId: recoveredDraft?.interviewId ?? payload.interviewId,
+        launchToken: payload.launchToken,
+      });
     } catch {
       setStartState("error");
       setLaunchMessage(
         "The interview handoff could not be reached. Retry the start action.",
       );
     }
+  }
+
+  if (activeInterview) {
+    return (
+      <main className="interview-shell">
+        <section className="interview-card live-card">
+          <InterviewRoom
+            interviewId={activeInterview.interviewId}
+            launchToken={activeInterview.launchToken}
+            onComplete={({ filePath }) => {
+              setActiveInterview(null);
+              setRecoveredDraft(null);
+              setStartState("confirmed");
+              setLaunchMessage(
+                filePath
+                  ? `Interview finished. Transcript saved to ${filePath}.`
+                  : "Interview finished.",
+              );
+            }}
+            recoveredDraft={recoveredDraft}
+            session={session}
+          />
+        </section>
+      </main>
+    );
   }
 
   return (
@@ -107,6 +165,12 @@ export function EntryScreen({ session }: EntryScreenProps) {
             <p className="supporting-copy">
               Keep your camera on for this interview. {interviewModeMessage}
             </p>
+            {recoveredDraft ? (
+              <div className="warning-banner">
+                A saved interview draft was found for this link. Starting now
+                will restore the transcript and continue the interview.
+              </div>
+            ) : null}
             <div className="info-banner">
               Camera access is required. The interview cannot begin until both
               camera and microphone are ready.

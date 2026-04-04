@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint src tests next.config.ts playwright.config.ts eslint.config.mjs"
   },
   "dependencies": {
     "next": "16.2.2",

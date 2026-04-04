@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { createLaunchToken } from "@/lib/interview/session";
+import { createInterviewId, createLaunchToken } from "@/lib/interview/session";
 import type { StartInterviewResult } from "@/lib/interview/types";
 
 type RouteContext = {
@@ -26,7 +26,8 @@ export async function POST(_request: Request, context: RouteContext) {
     ok: true,
     token,
     launchToken,
-    nextStep: "device-preflight",
+    interviewId: createInterviewId(token),
+    nextStep: "realtime-room",
   };
 
   return NextResponse.json(payload);

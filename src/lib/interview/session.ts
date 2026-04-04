@@ -10,6 +10,7 @@ const sessionSeed: Record<string, InterviewSession> = {
     candidateName: "Lin Tao",
     roleTitle: "Small Molecule R&D Scientist",
     focusArea: "New-drug discovery screening",
+    domainSpecialty: "new-drug-rd",
     scheduledWindow: "Available now",
     interviewerLabel: "AI Interviewer",
     interviewerMode: "voice-only",
@@ -33,4 +34,8 @@ export async function createLaunchToken(token: string) {
   }
 
   return `launch-${session.token}`;
+}
+
+export function createInterviewId(token: string) {
+  return `${token}-${Date.now()}`;
 }

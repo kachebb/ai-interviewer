@@ -105,9 +105,7 @@ test("@start-flow starts the interview after readiness passes", async ({ page })
   await expect(startButton).toBeEnabled();
   await startButton.click();
 
-  await expect(
-    page.getByText("Interview launch confirmed. Device readiness is complete"),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Voice interview in progress" })).toBeVisible();
 });
 
 test("@preflight shows readiness after explicit device enable", async ({ page }) => {
