@@ -13,6 +13,9 @@ export default function HomePage() {
         <Link className="primary-link" href="/interview/demo-rd-001">
           Open demo interview
         </Link>
+        <Link className="secondary-button" href="/transcripts">
+          View transcripts
+        </Link>
       </section>
     </main>
   );

@@ -140,3 +140,13 @@ test("@permission-failure shows inline retry guidance", async ({ page }) => {
   );
   await expect(page.getByRole("button", { name: "Retry device check" })).toBeVisible();
 });
+
+test("@transcript-browser lists saved interview transcripts", async ({ page }) => {
+  await page.goto("/transcripts");
+
+  await expect(
+    page.getByRole("heading", { name: "Interview transcripts" }),
+  ).toBeVisible();
+  await expect(page.getByText("Lin Tao")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Open transcript" }).first()).toBeVisible();
+});
