@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import type {
@@ -16,6 +17,7 @@ type EntryScreenProps = {
 };
 
 export function EntryScreen({ session }: EntryScreenProps) {
+  const router = useRouter();
   const [activeInterview, setActiveInterview] = useState<{
     interviewId: string;
     launchToken: string;
@@ -106,14 +108,18 @@ export function EntryScreen({ session }: EntryScreenProps) {
             interviewId={activeInterview.interviewId}
             launchToken={activeInterview.launchToken}
             onComplete={({ filePath }) => {
+              const completedInterviewId = activeInterview.interviewId;
+
+              if (filePath) {
+                setRecoveredDraft(null);
+                router.push(`/transcripts/${completedInterviewId}`);
+                return;
+              }
+
               setActiveInterview(null);
               setRecoveredDraft(null);
               setStartState("confirmed");
-              setLaunchMessage(
-                filePath
-                  ? `Interview finished. Transcript saved to ${filePath}.`
-                  : "Interview finished.",
-              );
+              setLaunchMessage("Interview finished, but the transcript could not be opened.");
             }}
             recoveredDraft={recoveredDraft}
             session={session}

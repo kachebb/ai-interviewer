@@ -16,6 +16,8 @@ export function buildTranscriptionPrompt(session: InterviewSession) {
 
 export function buildRealtimeSessionConfig(session: InterviewSession) {
   return {
+    type: "realtime",
+    model: REALTIME_MODEL,
     instructions: buildRealtimeInstructions(session),
     max_output_tokens: 600,
     audio: {
@@ -43,8 +45,6 @@ export function buildRealtimeSessionConfig(session: InterviewSession) {
 
 export function buildRealtimeCallPayload(session: InterviewSession) {
   return {
-    type: "realtime",
-    model: REALTIME_MODEL,
     ...buildRealtimeSessionConfig(session),
   };
 }
