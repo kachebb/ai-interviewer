@@ -346,6 +346,40 @@ textarea {
   margin-top: 24px;
 }
 
+.voice-status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.voice-status-card,
+.diagnostics-panel {
+  background: var(--panel-strong);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+}
+
+.checkpoint-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.status-line {
+  margin: 6px 0 0;
+  padding: 0 24px;
+  text-align: center;
+  color: rgba(255, 248, 238, 0.8);
+  line-height: 1.5;
+}
+
+.audio-recovery-banner .action-row {
+  margin-top: 14px;
+}
+
 .transcript-browser-card {
   padding: 32px;
 }
@@ -446,6 +480,34 @@ textarea {
   display: flex;
   gap: 12px;
   align-items: center;
+}
+
+.diagnostics-panel {
+  margin-top: 22px;
+}
+
+.diagnostics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.diagnostics-card {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 14px 16px;
+}
+
+.diagnostic-list {
+  margin: 10px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.diagnostic-list li + li {
+  margin-top: 6px;
 }
 
 .connection-pill,
@@ -642,7 +704,9 @@ textarea {
 
   .interview-room-shell,
   .call-layout,
-  .transcript-detail-grid {
+  .transcript-detail-grid,
+  .voice-status-grid,
+  .diagnostics-grid {
     grid-template-columns: 1fr;
   }
 

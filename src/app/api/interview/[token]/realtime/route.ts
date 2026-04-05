@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { buildRealtimeInstructions } from "@/lib/interview/interviewer-policy";
+import { buildRealtimeCallPayload } from "@/lib/interview/realtime-config";
 import { getInterviewSession } from "@/lib/interview/session";
 
 type RouteContext = {
@@ -35,33 +35,7 @@ export async function POST(request: Request, context: RouteContext) {
     return new NextResponse("WebRTC offer SDP is required.", { status: 400 });
   }
 
-  const sessionConfig = JSON.stringify({
-    type: "realtime",
-    model: "gpt-realtime",
-    instructions: buildRealtimeInstructions(session),
-    max_output_tokens: 600,
-    audio: {
-      input: {
-        noise_reduction: {
-          type: "near_field",
-        },
-        transcription: {
-          model: "gpt-4o-mini-transcribe",
-          prompt:
-            "Candidate interview for pharmaceutical R&D, new-drug discovery, assay development, PK/PD, translational science, IND, CMC, GMP, GLP, medicinal chemistry, biologics, and screening terminology.",
-        },
-        turn_detection: {
-          type: "semantic_vad",
-          eagerness: "low",
-          create_response: true,
-          interrupt_response: true,
-        },
-      },
-      output: {
-        voice: "marin",
-      },
-    },
-  });
+  const sessionConfig = JSON.stringify(buildRealtimeCallPayload(session));
 
   const formData = new FormData();
   formData.set("sdp", offerSdp);
