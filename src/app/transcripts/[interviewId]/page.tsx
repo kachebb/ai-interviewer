@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 
 import { getInterviewTranscript } from "@/lib/interview/transcript-query";
 
+export const dynamic = "force-dynamic";
+
 type TranscriptDetailPageProps = {
   params: Promise<{
     interviewId: string;

@@ -2,6 +2,8 @@ import Link from "next/link";
 
 import { listInterviewTranscripts } from "@/lib/interview/transcript-query";
 
+export const dynamic = "force-dynamic";
+
 function formatTimestamp(value: string) {
   return new Intl.DateTimeFormat("en-US", {
     dateStyle: "medium",
