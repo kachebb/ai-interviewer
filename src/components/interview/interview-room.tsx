@@ -46,6 +46,11 @@ type TranscriptMap = Record<string, TranscriptEntry>;
 const storagePrefix = "ai-interviewer:draft:";
 const maxDebugEvents = 8;
 
+type DebugEvent = {
+  id: string;
+  type: string;
+};
+
 function isMediaStream(value: unknown): value is MediaStream {
   return typeof MediaStream !== "undefined" && value instanceof MediaStream;
 }
@@ -137,7 +142,7 @@ export function InterviewRoom({
     "idle" | "enabling" | "enabled"
   >("idle");
   const [lastEventType, setLastEventType] = useState<string | null>(null);
-  const [recentEventTypes, setRecentEventTypes] = useState<string[]>([]);
+  const [recentEventTypes, setRecentEventTypes] = useState<DebugEvent[]>([]);
   const [lastRealtimeError, setLastRealtimeError] = useState<string | null>(
     null,
   );
@@ -251,7 +256,13 @@ export function InterviewRoom({
   const recordRealtimeEvent = useCallback((eventType: string) => {
     setLastEventType(eventType);
     setRecentEventTypes((current) => {
-      const next = [eventType, ...current];
+      const next = [
+        {
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          type: eventType,
+        },
+        ...current,
+      ];
       return next.slice(0, maxDebugEvents);
     });
   }, []);
@@ -779,8 +790,8 @@ export function InterviewRoom({
                 <strong>Events</strong>
                 <ul className="diagnostic-list">
                   <li>Last event: {lastEventType ?? "none yet"}</li>
-                  {recentEventTypes.map((eventType) => (
-                    <li key={eventType}>{eventType}</li>
+                  {recentEventTypes.map((event) => (
+                    <li key={event.id}>{event.type}</li>
                   ))}
                 </ul>
               </div>
